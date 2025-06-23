@@ -387,10 +387,36 @@ const ProductCard: React.FC<{
         <TossButton
           variant="secondary"
           size="small"
-          onClick={() => navigator.clipboard.writeText(product.id)}
-          icon="🔗"
+          onClick={() => {
+            const serviceInfo = `📋 서비스 정보
+
+🏷️ 서비스명: ${product.name}
+🌐 플랫폼: ${product.platform}
+📂 카테고리: ${product.category}
+💰 가격: ₩${product.price.toLocaleString()} / ${product.unit || '개'}
+📊 주문량: ${product.minOrder.toLocaleString()} ~ ${product.maxOrder.toLocaleString()}${product.unit || '개'}
+⏱️ 처리시간: ${product.deliveryTime}
+⭐ 품질: ${product.quality === 'standard' ? '표준' : product.quality === 'premium' ? '프리미엄' : 'VIP'}
+🎯 특징: ${product.features.join(', ')}
+
+📝 설명:
+${product.description}
+
+📈 판매 현황:
+- 총 주문: ${product.totalOrders.toLocaleString()}건
+- 총 매출: ₩${product.totalRevenue.toLocaleString()}
+- 상태: ${product.isActive ? '활성' : '비활성'}${product.isPopular ? ' | 인기상품' : ''}${product.isRecommended ? ' | 추천상품' : ''}
+
+🆔 서비스 ID: ${product.id}`;
+
+            navigator.clipboard.writeText(serviceInfo).then(() => {
+              // 복사 성공 알림 (선택사항)
+              console.log('서비스 정보가 클립보드에 복사되었습니다.');
+            });
+          }}
+          icon="📋"
         >
-          ID 복사
+          서비스 복사
         </TossButton>
 
         <TossButton
