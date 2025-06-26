@@ -1,0 +1,27 @@
+name: 🤖 Auto-merge Same AI PRs
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    # Same AI 봇이 만든 PR만 대상
+    if: github.actor == 'same[bot]'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Auto-merge Same AI PR
+        uses: pascalgn/automerge-action@v0.15.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          merge_method: squash    # squash, merge, or rebase 중 선택
+
+      - name: Cleanup head branch
+        if: ${{ github.event.pull_request.merged == true }}
+        run: |
+          # GitHub CLI를 이용해 머지된 PR의 브랜치 자동 삭제
+          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+          gh pr close ${{ github.event.pull_request.number }} --delete-branch
